@@ -1,38 +1,49 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github } from "lucide-react";
-import projectMobile from "@/assets/project-mobile.jpg";
-import projectDashboard from "@/assets/project-dashboard.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import portfolioBg from "@/assets/portfolio-bg.jpg";
 
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image_url: string | null;
+  tags: string[];
+  project_url: string | null;
+  github_url: string | null;
+  featured: boolean;
+}
+
 const Portfolio = () => {
-  const projects = [
-    {
-      title: "E-Commerce Mobile App",
-      description: "A modern e-commerce mobile application with seamless user experience, intuitive navigation, and beautiful product showcases.",
-      image: projectMobile,
-      tags: ["UI Design", "Mobile", "E-commerce", "Figma"],
-      link: "#",
-      github: "#"
-    },
-    {
-      title: "Analytics Dashboard",
-      description: "Clean and comprehensive analytics dashboard for data visualization with real-time updates and interactive charts.",
-      image: projectDashboard,
-      tags: ["Web Design", "Dashboard", "Analytics", "React"],
-      link: "#",
-      github: "#"
-    },
-    {
-      title: "Design System",
-      description: "Complete design system with components, guidelines, and documentation for consistent product experiences.",
-      image: portfolioBg,
-      tags: ["Design System", "Components", "Documentation"],
-      link: "#",
-      github: "#"
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchFeaturedProjects();
+  }, []);
+
+  const fetchFeaturedProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('featured', true)
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      if (error) throw error;
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   return (
     <section id="portfolio" className="py-20 bg-muted/30 relative overflow-hidden">
@@ -60,61 +71,91 @@ const Portfolio = () => {
 
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <Card 
-                key={index} 
-                className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-4 bg-card border-border/50"
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <div className="relative overflow-hidden">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                </div>
-                
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {project.title}
-                    </h3>
-                    
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {project.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag, tagIndex) => (
-                        <Badge 
-                          key={tagIndex} 
-                          variant="secondary" 
-                          className="text-xs"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-3 pt-2">
-                      <Button variant="default" size="sm" className="flex-1">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        View Project
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Github className="w-4 h-4" />
-                      </Button>
-                    </div>
+            {loading ? (
+              [...Array(3)].map((_, index) => (
+                <Card key={index} className="animate-pulse">
+                  <div className="h-64 bg-muted"></div>
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-muted rounded mb-4"></div>
+                    <div className="h-4 bg-muted rounded mb-2"></div>
+                    <div className="h-4 bg-muted rounded w-2/3"></div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              projects.map((project, index) => (
+                <Card 
+                  key={project.id} 
+                  className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:-translate-y-4 bg-card border-border/50"
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                >
+                  <div className="relative overflow-hidden">
+                    <img 
+                      src={project.image_url || "/placeholder.svg"} 
+                      alt={project.title}
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                  
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                        {project.title}
+                      </h3>
+                      
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {project.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag, tagIndex) => (
+                          <Badge 
+                            key={tagIndex} 
+                            variant="secondary" 
+                            className="text-xs"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                      
+                      <div className="flex gap-3 pt-2">
+                        {project.project_url && project.project_url !== '#' && (
+                          <Button 
+                            variant="default" 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => window.open(project.project_url!, '_blank')}
+                          >
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            View Project
+                          </Button>
+                        )}
+                        {project.github_url && project.github_url !== '#' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(project.github_url!, '_blank')}
+                          >
+                            <Github className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* CTA */}
           <div className="text-center mt-16 animate-fade-in">
-            <Button variant="cta" size="lg">
+            <Button 
+              variant="cta" 
+              size="lg"
+              onClick={() => navigate('/projects')}
+            >
               View All Projects
             </Button>
           </div>
