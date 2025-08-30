@@ -29,7 +29,7 @@ const Hero = () => {
                 Hello, I'm
               </p>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-primary bg-clip-text text-transparent leading-tight">
-                Alex Chen
+                Apeksha Dembala
               </h1>
               <h2 className="text-2xl md:text-3xl text-foreground/80 font-light">
                 UI/UX Developer & Digital Designer

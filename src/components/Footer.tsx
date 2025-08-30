@@ -7,7 +7,7 @@ const Footer = () => {
   const socialLinks = [
     { icon: Github, href: "#", label: "GitHub" },
     { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Mail, href: "mailto:alex.chen@example.com", label: "Email" },
+    { icon: Mail, href: "mailto:apekshad90@gmail.com", label: "Email" },
   ];
 
   const scrollToTop = () => {
@@ -22,7 +22,7 @@ const Footer = () => {
             {/* Brand */}
             <div className="space-y-4">
               <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Alex Chen
+                Apeksha Dembala
               </div>
               <p className="text-muted-foreground max-w-xs">
                 Creating digital experiences that inspire and engage users through thoughtful design and development.
@@ -52,8 +52,8 @@ const Footer = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground">Connect</h3>
               <div className="space-y-3">
-                <p className="text-muted-foreground">alex.chen@example.com</p>
-                <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                <p className="text-muted-foreground">apekshad90@gmail.com</p>
+                <p className="text-muted-foreground">+91 6360405023</p>
                 <div className="flex gap-3 pt-2">
                   {socialLinks.map((social, index) => (
                     <Button
@@ -76,7 +76,7 @@ const Footer = () => {
           {/* Bottom Bar */}
           <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <span>© {currentYear} Alex Chen. Made with</span>
+              <span>© {currentYear} Apeksha Dembala. Made with</span>
               <Heart className="w-4 h-4 text-red-500 fill-current" />
               <span>and lots of coffee.</span>
             </div>

@@ -63,13 +63,13 @@ const Contact = () => {
     {
       icon: Mail,
       label: "Email",
-      value: "alex.chen@example.com",
-      link: "mailto:alex.chen@example.com"
+      value: "apekshad90@gmail.com",
+      link: "mailto:apekshad90@gmail.com"
     },
     {
       icon: Phone,
       label: "Phone",
-      value: "+1 (555) 123-4567",
+      value: "+91 6360405023",
       link: "tel:+15551234567"
     },
     {
