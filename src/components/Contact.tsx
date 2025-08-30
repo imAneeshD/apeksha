@@ -75,7 +75,7 @@ const Contact = () => {
     {
       icon: MapPin,
       label: "Location",
-      value: "San Francisco, CA",
+      value: "Mangalore, India",
       link: "#"
     }
   ];
